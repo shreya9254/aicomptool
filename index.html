@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Comparison Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Prompt Tuning Workbench</h1>
+            <p>Test the same prompt across multiple models to find the best expression</p>
+        </header>
+        
+        <main>
+            <!-- System Prompt Section -->
+            <div class="system-prompt-section">
+                <div class="prompt-header">
+                    <h3>System Prompt</h3>
+                    <div class="prompt-controls">
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="system-shared-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label" id="system-toggle-label">Shared Mode</span>
+                        </div>
+                        <button id="clear-system" class="action-btn">Clear</button>
+                    </div>
+                </div>
+                <div id="system-shared-container" class="system-container">
+                    <textarea id="system-prompt" placeholder="Enter a system prompt (optional) to define the model’s role and behavior..." rows="2"></textarea>
+                </div>
+                <div id="system-separate-container" class="system-container" style="display: none;">
+                    <div class="separate-inputs">
+                        <div class="input-group">
+                            <label>Model A System Prompt</label>
+                            <textarea id="system-prompt-a" placeholder="Enter system prompt for Model A..." rows="2"></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label>Model B System Prompt</label>
+                            <textarea id="system-prompt-b" placeholder="Enter system prompt for Model B..." rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Section -->
+            <div class="config-section">
+                <div class="config-header">
+                    <h3>Model Configuration</h3>
+                    <div class="config-actions">
+                        <button id="manage-apis" class="manage-btn">Manage APIs</button>
+                        <button id="manage-models" class="manage-btn">Manage Models</button>
+                        <button id="toggle-config" class="toggle-btn">Collapse Config</button>
+                    </div>
+                </div>
+                <div id="config-content" class="config-content">
+                    <div class="model-config">
+                        <div class="model-item">
+                            <div class="model-header">
+                                <span class="model-label">Model A</span>
+                                <button id="test-connection-a" class="test-btn-small">Test</button>
+                            </div>
+                            <div class="model-inputs">
+                                <div class="input-with-dropdown">
+                                    <select id="api-url-select-a" class="dropdown-select">
+                                        <option value="">Select API endpoint...</option>
+                                        <option value="https://api.openai.com/v1/chat/completions">OpenAI API</option>
+                                        <option value="https://openrouter.ai/api/v1/chat/completions">OpenRouter API</option>
+                                        <option value="https://api.anthropic.com/v1/messages">Anthropic Claude API</option>
+                                        <option value="https://generativelanguage.googleapis.com/v1beta/models/">Google Gemini API</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                    <input type="text" id="api-url-a" placeholder="Or enter API endpoint directly" class="compact-input api-input">
+                                </div>
+                                <div class="input-with-dropdown">
+                                    <select id="model-select-a" class="dropdown-select">
+                                        <option value="">Select model...</option>
+                                        <option value="gpt-4">GPT-4</option>
+                                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+                                        <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                                        <option value="gemini-pro">Gemini Pro</option>
+                                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                    <input type="text" id="model-name-a" placeholder="Or enter model name directly" class="compact-input model-input">
+                                </div>
+                                <input type="password" id="api-key-a" placeholder="API Key" class="compact-input">
+                            </div>
+                            <div id="connection-status-a" class="connection-status-small"></div>
+                        </div>
+                        
+                        <div class="model-item">
+                            <div class="model-header">
+                                <span class="model-label">Model B</span>
+                                <button id="test-connection-b" class="test-btn-small">Test</button>
+                            </div>
+                            <div class="model-inputs">
+                                <div class="input-with-dropdown">
+                                    <select id="api-url-select-b" class="dropdown-select">
+                                        <option value="">Select API endpoint...</option>
+                                        <option value="https://api.openai.com/v1/chat/completions">OpenAI API</option>
+                                        <option value="https://openrouter.ai/api/v1/chat/completions">OpenRouter API</option>
+                                        <option value="https://api.anthropic.com/v1/messages">Anthropic Claude API</option>
+                                        <option value="https://generativelanguage.googleapis.com/v1beta/models/">Google Gemini API</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                    <input type="text" id="api-url-b" placeholder="Or enter API endpoint directly" class="compact-input api-input">
+                                </div>
+                                <div class="input-with-dropdown">
+                                    <select id="model-select-b" class="dropdown-select">
+                                        <option value="">Select model...</option>
+                                        <option value="gpt-4">GPT-4</option>
+                                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+                                        <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                                        <option value="gemini-pro">Gemini Pro</option>
+                                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                    <input type="text" id="model-name-b" placeholder="Or enter model name directly" class="compact-input model-input">
+                                </div>
+                                <input type="password" id="api-key-b" placeholder="API Key" class="compact-input">
+                            </div>
+                            <div id="connection-status-b" class="connection-status-small"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Comparison Section -->
+            <div class="results-section">
+                <div class="result-container">
+                    <div class="result-left">
+                        <div class="result-header">
+                            <h3 id="model-a-title">Model A</h3>
+                            <div class="status" id="status-a">Ready</div>
+                        </div>
+                        <div class="result-content">
+                            <div id="conversation-history-a" class="conversation-history">
+                                <div class="empty-state">Waiting to start conversation...</div>
+                            </div>
+                            <div class="result-meta">
+                                <span id="time-a" class="time-info"></span>
+                                <span id="tokens-a" class="token-info"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-right">
+                        <div class="result-header">
+                            <h3 id="model-b-title">Model B</h3>
+                            <div class="status" id="status-b">Ready</div>
+                        </div>
+                        <div class="result-content">
+                            <div id="conversation-history-b" class="conversation-history">
+                                <div class="empty-state">Waiting to start conversation...</div>
+                            </div>
+                            <div class="result-meta">
+                                <span id="time-b" class="time-info"></span>
+                                <span id="tokens-b" class="token-info"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Input Section -->
+            <div class="input-section">
+                <div class="user-input-container">
+                    <div class="prompt-header">
+                        <h3>User Input</h3>
+                        <div class="prompt-actions">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="user-shared-toggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label" id="user-toggle-label">Shared Mode</span>
+                            </div>
+                            <button id="clear-user" class="action-btn">Clear</button>
+                            <select id="preset-prompts" class="preset-select">
+                                <option value="">Select Preset Prompt...</option>
+                                <option value="translate">Translation Assistant</option>
+                                <option value="code">Code Assistant</option>
+                                <option value="creative">Creative Writing</option>
+                                <option value="analysis">Data Analysis</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="user-shared-container" class="input-container">
+                        <div class="input-row">
+                            <textarea id="user-prompt" placeholder="Enter your question or follow-up..." rows="3"></textarea>
+                            <div class="input-actions">
+                                <button id="send-btn" class="send-button">Send</button>
+                                <button id="new-conversation-btn" class="new-conversation-button">New Conversation</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="user-separate-container" class="input-container" style="display: none;">
+                        <div class="separate-inputs">
+                            <div class="input-group">
+                                <label>Model A Input</label>
+                                <div class="input-row">
+                                    <textarea id="user-prompt-a" placeholder="Enter question for Model A..." rows="3"></textarea>
+                                    <div class="input-actions">
+                                        <button id="send-btn-a" class="send-button">Send A</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Model B Input</label>
+                                <div class="input-row">
+                                    <textarea id="user-prompt-b" placeholder="Enter question for Model B..." rows="3"></textarea>
+                                    <div class="input-actions">
+                                        <button id="send-btn-b" class="send-button">Send B</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="separate-actions">
+                            <button id="send-both-btn" class="send-button send-both">Send Both</button>
+                            <button id="new-conversation-btn-separate" class="new-conversation-button">New Conversation</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-text">
+                    <small>💡 Shortcut: Ctrl+Enter to send | Double-click message to copy text</small>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- API Management Modal -->
+    <div id="api-management-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Manage API Addresses</h3>
+                <span class="close" id="close-api-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="add-item-section">
+                    <h4>Add New API</h4>
+                    <div class="add-item-form">
+                        <input type="text" id="new-api-name" placeholder="API Name" class="modal-input">
+                        <input type="text" id="new-api-url" placeholder="API URL" class="modal-input">
+                        <button id="add-api-btn" class="add-btn">Add</button>
+                    </div>
+                </div>
+                <div class="items-list-section">
+                    <h4>Existing API List</h4>
+                    <div id="api-list" class="items-list">
+                        <!-- API list dynamically generated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Management Modal -->
+    <div id="model-management-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Manage Models</h3>
+                <span class="close" id="close-model-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="add-item-section">
+                    <h4>Add New Model</h4>
+                    <div class="add-item-form">
+                        <input type="text" id="new-model-name" placeholder="Model Name" class="modal-input">
+                        <input type="text" id="new-model-display" placeholder="Display Name" class="modal-input">
+                        <button id="add-model-btn" class="add-btn">Add</button>
+                    </div>
+                </div>
+                <div class="items-list-section">
+                    <h4>Existing Model List</h4>
+                    <div id="model-list" class="items-list">
+                        <!-- Model list dynamically generated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
